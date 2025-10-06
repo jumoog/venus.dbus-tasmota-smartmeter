@@ -14,7 +14,7 @@ In the Python file, you should put the IP of your Tasmota device that hosts the 
 
 1. Copy the files to the /data folder on your venus:
 
-   - `wget -O main.zip https://github.com/AchimKre/venus.dbus-tasmota-smartmeter/archive/refs/heads/main.zip`
+   - `wget -O main.zip https://github.com/jumoog/venus.dbus-tasmota-smartmeter/archive/refs/heads/main.zip`
    - `unzip main.zip -d /data`
    - `mv /data/venus.dbus-tasmota-smartmeter-main /data/dbus-tasmota-smartmeter`
    - `rm main.zip`

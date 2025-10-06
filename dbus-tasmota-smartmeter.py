@@ -69,26 +69,26 @@ class DbusSmartmeterService:
   def _update(self):   
   
     try:
-      meter_url = "http://192.168.XXX.XXX/cm?cmnd=status%2010"
+      meter_url = "http://192.168.178.95/cm?cmnd=status%2010"
       meter_r = requests.get(url=meter_url) # request data from the Tasmota Smartmeter
       meter_data = meter_r.json() # convert JSON data
-      #meter_consumption = meter_data['StatusSNS']['MT681']['DJ_TPWRCURR']['DJ_TPWRIN']['DJ_TPWROUT']
+      #meter_consumption = meter_data['StatusSNS']['E320']['DJ_TPWRCURR']['DJ_TPWRIN']['DJ_TPWROUT']
       #send data to DBus
-      self._dbusservice['/Ac/Power'] = meter_data['StatusSNS']['MT681']['Power_cur'] # positive: consumption, negative: feed into grid
-      self._dbusservice['/Ac/Current'] = float(meter_data['StatusSNS']['MT681']['Power_cur'] / 230 )
+      self._dbusservice['/Ac/Power'] = meter_data['StatusSNS']['E320']['Power_curr'] # positive: consumption, negative: feed into grid
+      self._dbusservice['/Ac/Current'] = float(meter_data['StatusSNS']['E320']['Power_curr'] / 230 )
       self._dbusservice['/Ac/L1/Voltage'] = 230
        #self._dbusservice['/Ac/L2/Voltage'] = 230
        #self._dbusservice['/Ac/L3/Voltage'] = 230
-      self._dbusservice['/Ac/L1/Current'] = float(meter_data['StatusSNS']['MT681']['Power_cur'] / 230 )
+      self._dbusservice['/Ac/L1/Current'] = float(meter_data['StatusSNS']['E320']['Power_curr'] / 230 )
        #self._dbusservice['/Ac/L2/Current'] = 1
        #self._dbusservice['/Ac/L3/Current'] = 1
-      self._dbusservice['/Ac/L1/Power'] = float(meter_data['StatusSNS']['MT681']['Power_cur'])
+      self._dbusservice['/Ac/L1/Power'] = float(meter_data['StatusSNS']['E320']['Power_curr'])
        #self._dbusservice['/Ac/L2/Power'] = 59
        #self._dbusservice['/Ac/L3/Power'] = 59
-      self._dbusservice['/Ac/L1/Energy/Forward'] = meter_data['StatusSNS']['MT681']['Total_in']
+      self._dbusservice['/Ac/L1/Energy/Forward'] = meter_data['StatusSNS']['E320']['Total_in']
        #self._dbusservice['/Ac/L2/Energy/Forward'] = 0.059
        #self._dbusservice['/Ac/L3/Energy/Forward'] = 0.059																				  
-      self._dbusservice['/Ac/L1/Energy/Reverse'] = meter_data['StatusSNS']['MT681']['Total_out'] 
+      self._dbusservice['/Ac/L1/Energy/Reverse'] = meter_data['StatusSNS']['E320']['Total_out'] 
       self._dbusservice['/Ac/Energy/Forward'] = self._dbusservice['/Ac/L1/Energy/Forward']
       self._dbusservice['/Ac/Energy/Reverse'] = self._dbusservice['/Ac/L1/Energy/Reverse']
       #logging
