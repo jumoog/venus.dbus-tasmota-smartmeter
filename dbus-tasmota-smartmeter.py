@@ -31,7 +31,7 @@ from vedbus import VeDbusService
 
 class DbusSmartmeterService:
   def __init__(self, servicename, deviceinstance, paths, productname='Tasmota', connection='Tasmota Web service'):
-    self._dbusservice = VeDbusService("{}.http_{:02d}".format(servicename, deviceinstance))
+    self._dbusservice = VeDbusService("{}.http_{:02d}".format(servicename, deviceinstance), register=False)
     self._paths = paths
  
     logging.debug("%s /DeviceInstance = %d" % (servicename, deviceinstance))
@@ -62,6 +62,7 @@ class DbusSmartmeterService:
  
     # last update
     self._lastUpdate = 0
+    self._dbusservice.register()
  
     # add _update function 'timer'
     gobject.timeout_add(1000, self._update) # pause 1s before the next request
@@ -95,7 +96,7 @@ class DbusSmartmeterService:
       logging.debug("House Consumption (/Ac/Power): %s" % (self._dbusservice['/Ac/Power']))
       logging.debug("House Forward (/Ac/Energy/Forward): %s" % (self._dbusservice['/Ac/Energy/Forward']))
       logging.debug("House Reverse (/Ac/Energy/Revers): %s" % (self._dbusservice['/Ac/Energy/Reverse']))
-      logging.debug("---");
+      logging.debug("---")
        
        # increment UpdateIndex - to show that new data is available
       index = self._dbusservice['/UpdateIndex'] + 1  # increment index
