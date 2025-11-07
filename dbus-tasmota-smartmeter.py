@@ -24,6 +24,8 @@ else:
 import sys
 import time
 import requests # for http GET
+from requests.exceptions import RequestException
+from urllib3.exceptions import MaxRetryError
  
 # our own packages from victron
 sys.path.insert(1, os.path.join(os.path.dirname(__file__), '/opt/victronenergy/dbus-systemcalc-py/ext/velib_python'))
@@ -31,7 +33,7 @@ from vedbus import VeDbusService
 
 class DbusSmartmeterService:
   def __init__(self, servicename, deviceinstance, paths, productname='Tasmota', connection='Tasmota Web service'):
-    self._dbusservice = VeDbusService("{}.http_{:02d}".format(servicename, deviceinstance))
+    self._dbusservice = VeDbusService("{}.http_{:02d}".format(servicename, deviceinstance), register=False)
     self._paths = paths
  
     logging.debug("%s /DeviceInstance = %d" % (servicename, deviceinstance))
@@ -62,6 +64,7 @@ class DbusSmartmeterService:
  
     # last update
     self._lastUpdate = 0
+    self._dbusservice.register()
  
     # add _update function 'timer'
     gobject.timeout_add(1000, self._update) # pause 1s before the next request
@@ -105,6 +108,11 @@ class DbusSmartmeterService:
 
       #update lastupdate vars
       self._lastUpdate = time.time()              
+    except MaxRetryError:
+      return True
+    except RequestException as e:
+      logging.debug('HTTP error while retrieving smartmeter data: %s', e)
+      return True
     except Exception as e:
       logging.critical('Error at %s', '_update', exc_info=e)
        
